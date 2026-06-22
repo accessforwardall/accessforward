@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Access Forward LLC — digital accessibility audits, remediation, and VPAT/conformance reports for New Mexico governments, health centers, and the vendors who serve them. WCAG 2.2 and Section 508.">
+<meta name="theme-color" content="#15233A">
+<title>Access Forward — Accessibility audits &amp; remediation in New Mexico</title>
+<style>
+  :root{
+    --paper:#FBFAF7;
+    --ink:#15233A;
+    --slate:#4A5568;     /* 7.21:1 on paper — AAA */
+    --jade:#1F6E5B;      /* 5.85:1 on paper — AA  */
+    --jade-deep:#185647;
+    --amber:#C77B26;
+    --jade-light:#74C2A8;  /* 7.52:1 on ink — AAA */
+    --amber-light:#E6A84D; /* 7.55:1 on ink — AAA */
+    --paper-dim:#C9CEDA;   /* 9.99:1 on ink — AAA */
+    --line:#E6E1D6;
+    --line-ink:#2C3A52;
+    --card:#FFFFFF;
+
+    --font-display:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+    --font-body:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --font-mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,Consolas,"Liberation Mono",monospace;
+
+    --maxw:1080px;
+    --measure:62ch;
+    --pad-x:clamp(1.25rem,5vw,2.5rem);
+    --pad-y:clamp(3.5rem,7vw,6rem);
+    --radius:8px;
+  }
+
+  *,*::before,*::after{box-sizing:border-box}
+  html{font-size:100%;-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:5rem}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--font-body);
+    font-size:1.0625rem;
+    line-height:1.62;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---- accessibility primitives ---- */
+  a.skip{
+    position:absolute;left:0.75rem;top:-3rem;z-index:200;
+    background:var(--ink);color:var(--paper);
+    padding:0.6rem 1rem;border-radius:var(--radius);
+    text-decoration:none;font-weight:600;
+    transition:top .15s ease;
+  }
+  a.skip:focus{top:0.75rem}
+
+  :focus-visible{outline:3px solid var(--jade);outline-offset:3px;border-radius:2px}
+  .band-dark :focus-visible{outline-color:var(--amber-light)}
+
+  /* ---- layout ---- */
+  .wrap{max-width:var(--maxw);margin-inline:auto;padding-inline:var(--pad-x)}
+  section{padding-block:var(--pad-y)}
+  .measure{max-width:var(--measure)}
+
+  /* ---- type ---- */
+  h1,h2,h3{font-family:var(--font-display);font-weight:600;line-height:1.1;letter-spacing:-0.01em;margin:0}
+  h1{font-size:clamp(2.4rem,6.2vw,4.05rem);letter-spacing:-0.025em}
+  h2{font-size:clamp(1.7rem,3.6vw,2.4rem);letter-spacing:-0.02em}
+  h3{font-size:1.2rem;line-height:1.25}
+  p{margin:0 0 1rem}
+  .eyebrow{
+    font-family:var(--font-mono);font-size:0.78rem;font-weight:600;
+    letter-spacing:0.12em;text-transform:uppercase;color:var(--jade);
+    margin:0 0 1.1rem;display:flex;align-items:center;gap:.6rem;
+  }
+  .eyebrow::before{content:"";width:1.6rem;height:2px;background:var(--jade);display:inline-block}
+  .lead{font-size:clamp(1.06rem,2vw,1.2rem);color:var(--slate);max-width:54ch}
+  .sub{color:var(--slate)}
+
+  /* ---- links ---- */
+  a{color:var(--jade);text-underline-offset:.18em;text-decoration-thickness:1.5px}
+  a:hover{color:var(--jade-deep)}
+  .band-dark a{color:var(--jade-light)}
+  .band-dark a:hover{color:#9BD6C2}
+
+  /* ---- buttons ---- */
+  .btn{
+    display:inline-flex;align-items:center;gap:.5rem;
+    font-family:var(--font-body);font-size:1rem;font-weight:600;
+    padding:0.8rem 1.35rem;border-radius:var(--radius);
+    text-decoration:none;border:2px solid transparent;cursor:pointer;
+    transition:background-color .15s ease,color .15s ease,border-color .15s ease,transform .15s ease;
+  }
+  .btn-primary{background:var(--jade);color:var(--paper)}
+  .btn-primary:hover{background:var(--jade-deep);color:var(--paper);transform:translateY(-1px)}
+  .btn-secondary{background:transparent;color:var(--ink);border-color:var(--line)}
+  .btn-secondary:hover{border-color:var(--jade);color:var(--jade-deep)}
+  .band-dark .btn-primary{background:var(--jade-light);color:var(--ink)}
+  .band-dark .btn-primary:hover{background:#9BD6C2;color:var(--ink)}
+  .btn .arw{font-family:var(--font-mono);font-weight:700}
+
+  /* ---- header ---- */
+  .site-header{
+    position:sticky;top:0;z-index:100;
+    background:rgba(251,250,247,0.86);backdrop-filter:saturate(140%) blur(8px);
+    border-bottom:1px solid transparent;
+  }
+  .site-header.scrolled{border-bottom-color:var(--line)}
+  .header-inner{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-block:0.85rem}
+  .brand{display:inline-flex;align-items:center;gap:.6rem;text-decoration:none;color:var(--ink);font-family:var(--font-display);font-weight:600;font-size:1.18rem;letter-spacing:-0.01em}
+  .brand:hover{color:var(--ink)}
+  .brand svg{flex:0 0 auto}
+  .nav{display:flex;align-items:center;gap:1.6rem}
+  .nav a.navlink{color:var(--slate);text-decoration:none;font-size:0.97rem;font-weight:500}
+  .nav a.navlink:hover{color:var(--jade-deep);text-decoration:underline}
+  @media (max-width:760px){.nav .navlink{display:none}}
+
+  /* ---- hero ---- */
+  .hero{padding-top:clamp(2.5rem,5vw,4rem)}
+  .hero-grid{display:grid;grid-template-columns:1.15fr 0.85fr;gap:clamp(2rem,5vw,3.5rem);align-items:center}
+  @media (max-width:860px){.hero-grid{grid-template-columns:1fr;gap:2.25rem}}
+  .hero h1{margin-bottom:1.25rem}
+  .hero .lead{margin-bottom:1.9rem;max-width:46ch}
+  .cta-row{display:flex;flex-wrap:wrap;gap:0.85rem}
+
+  /* hero entrance */
+  .rise{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.2,1) forwards}
+  .rise.d1{animation-delay:.06s}.rise.d2{animation-delay:.14s}.rise.d3{animation-delay:.22s}.rise.d4{animation-delay:.3s}
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  /* specimen card — the signature: a sample audit result */
+  .specimen{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:1.4rem;box-shadow:0 1px 0 var(--line),0 18px 40px -28px rgba(21,35,58,.4);
+  }
+  .specimen-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-bottom:.9rem;margin-bottom:.9rem;border-bottom:1px solid var(--line)}
+  .specimen-head .t{font-family:var(--font-mono);font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--slate)}
+  .score{font-family:var(--font-mono);font-weight:700;color:var(--jade);font-size:.86rem}
+  .row{display:flex;align-items:center;gap:.75rem;padding:.5rem 0}
+  .row + .row{border-top:1px solid var(--line)}
+  .sc{font-family:var(--font-mono);font-size:.8rem;color:var(--slate);min-width:3.6rem}
+  .row .label{flex:1;font-size:.95rem}
+  .pass{display:inline-flex;align-items:center;gap:.35rem;font-family:var(--font-mono);font-size:.74rem;font-weight:700;color:var(--jade);background:rgba(31,110,91,.1);border:1px solid rgba(31,110,91,.28);padding:.18rem .5rem;border-radius:999px}
+  .specimen-note{font-size:.78rem;color:var(--slate);margin:.95rem 0 0;font-style:italic}
+
+  /* ---- generic section heading ---- */
+  .sec-head{max-width:60ch;margin-bottom:2.4rem}
+  .sec-head h2{margin-bottom:.7rem}
+
+  /* ---- services ---- */
+  .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:1.1rem}
+  @media (max-width:680px){.grid-2{grid-template-columns:1fr}}
+  .svc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:1.5rem 1.5rem 1.6rem;transition:border-color .15s ease,transform .15s ease}
+  .svc:hover{border-color:var(--jade);transform:translateY(-2px)}
+  .svc .tag{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.08em;color:var(--amber);text-transform:uppercase;display:block;margin-bottom:.7rem}
+  .svc h3{margin-bottom:.55rem}
+  .svc p{color:var(--slate);font-size:.97rem;margin:0}
+
+  /* ---- audiences ---- */
+  .aud{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem}
+  @media (max-width:780px){.aud{grid-template-columns:1fr;gap:1.1rem}}
+  .aud-item{padding-top:1.1rem;border-top:2px solid var(--ink)}
+  .aud-item h3{margin-bottom:.5rem;font-size:1.12rem}
+  .aud-item p{color:var(--slate);font-size:.97rem;margin:0}
+  .flag{display:inline-block;font-family:var(--font-mono);font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#8a5414;background:rgba(199,123,38,.14);border:1px solid rgba(199,123,38,.4);padding:.15rem .5rem;border-radius:4px;margin-bottom:.7rem}
+
+  /* ---- method (numbered) ---- */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem;counter-reset:step}
+  @media (max-width:780px){.steps{grid-template-columns:1fr;gap:1.4rem}}
+  .step{position:relative;padding-top:1.2rem;border-top:1px solid var(--line)}
+  .step .num{font-family:var(--font-mono);font-size:.95rem;font-weight:700;color:var(--jade);display:block;margin-bottom:.6rem}
+  .step h3{margin-bottom:.5rem;font-size:1.1rem}
+  .step p{color:var(--slate);font-size:.96rem;margin:0}
+
+  /* ---- proof ---- */
+  .proof-grid{display:grid;grid-template-columns:0.9fr 1.1fr;gap:clamp(2rem,5vw,3.5rem);align-items:start}
+  @media (max-width:820px){.proof-grid{grid-template-columns:1fr;gap:2rem}}
+  .stat-list{list-style:none;margin:1.6rem 0 0;padding:0;display:grid;gap:1.1rem}
+  .stat-list li{display:grid;grid-template-columns:auto 1fr;gap:1rem;align-items:baseline}
+  .stat-list .n{font-family:var(--font-display);font-weight:600;font-size:1.7rem;color:var(--ink);line-height:1;min-width:3.8rem}
+  .stat-list .d{color:var(--slate);font-size:.97rem}
+  .creds{margin-top:1.4rem}
+  .creds h3{font-size:.82rem;font-family:var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--slate);margin-bottom:.7rem;font-weight:700}
+  .chips{display:flex;flex-wrap:wrap;gap:.5rem;list-style:none;margin:0;padding:0}
+  .chips li{font-size:.86rem;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:.35rem .8rem;color:var(--ink)}
+
+  /* ---- dark "by example" band ---- */
+  .band-dark{background:var(--ink);color:var(--paper)}
+  .band-dark h2{color:var(--paper)}
+  .band-dark .sub,.band-dark .lead{color:var(--paper-dim)}
+  .band-dark .eyebrow{color:var(--jade-light)}
+  .band-dark .eyebrow::before{background:var(--jade-light)}
+  .proof-chips{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1.9rem;list-style:none;padding:0}
+  .proof-chips li{display:inline-flex;align-items:center;gap:.55rem;font-size:.92rem;background:var(--line-ink);border:1px solid #3a4a64;border-radius:999px;padding:.5rem .95rem}
+  .proof-chips .ck{color:var(--jade-light);font-family:var(--font-mono);font-weight:700}
+  .proof-chips .mono{font-family:var(--font-mono);color:var(--amber-light);font-weight:700;font-size:.84rem}
+
+  /* ---- contact ---- */
+  .contact-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(2rem,5vw,3.5rem);align-items:center}
+  @media (max-width:780px){.contact-grid{grid-template-columns:1fr;gap:1.8rem}}
+  .contact-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.6rem}
+  .contact-card dl{margin:0;display:grid;gap:1.1rem}
+  .contact-card dt{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--slate);margin-bottom:.2rem}
+  .contact-card dd{margin:0;font-size:1.1rem;font-weight:600}
+  .contact-card dd a{font-weight:600}
+
+  /* ---- footer ---- */
+  .site-footer{border-top:1px solid var(--line);padding-block:2.5rem;color:var(--slate);font-size:.9rem}
+  .foot-inner{display:flex;flex-wrap:wrap;justify-content:space-between;gap:1rem}
+  .disclaimer{max-width:62ch;margin-top:1.1rem;font-size:.82rem;color:var(--slate)}
+
+  @media (prefers-reduced-motion:reduce){
+    *{scroll-behavior:auto !important}
+    .rise{opacity:1;transform:none;animation:none}
+    .btn:hover,.svc:hover{transform:none}
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+
+<header class="site-header" id="top">
+  <div class="wrap header-inner">
+    <a class="brand" href="#top" aria-label="Access Forward — home">
+      <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true" focusable="false">
+        <rect x="2.5" y="2.5" width="25" height="25" rx="6" fill="none" stroke="#1F6E5B" stroke-width="2.5"/>
+        <path d="M11 9.5 L18.5 15 L11 20.5" fill="none" stroke="#1F6E5B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>Access&nbsp;Forward</span>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a class="navlink" href="#services">Services</a>
+      <a class="navlink" href="#audiences">Who it's for</a>
+      <a class="navlink" href="#proof">Experience</a>
+      <a class="btn btn-primary" href="#contact">Free scan</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="hero-h">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="eyebrow rise">Digital accessibility · Las Cruces, New Mexico</p>
+        <h1 id="hero-h" class="rise d1">Accessibility you can&nbsp;prove.</h1>
+        <p class="lead rise d2">I help New Mexico governments, health centers, and the vendors who serve them meet WCAG&nbsp;2.2 and Section&nbsp;508 — with audits, remediation, and conformance reports that hold up to scrutiny.</p>
+        <div class="cta-row rise d3">
+          <a class="btn btn-primary" href="#contact">Request a free scan <span class="arw" aria-hidden="true">&rarr;</span></a>
+          <a class="btn btn-secondary" href="https://accessforwardall.github.io/accessforwardall" rel="noopener">See the work</a>
+        </div>
+      </div>
+
+      <aside class="specimen rise d4" aria-label="Illustration of a sample accessibility audit">
+        <div class="specimen-head">
+          <span class="t">Sample audit row</span>
+          <span class="score">4&nbsp;/&nbsp;4 pass</span>
+        </div>
+        <div class="row">
+          <span class="sc" aria-hidden="true">1.4.3</span>
+          <span class="label">Color contrast</span>
+          <span class="pass"><span aria-hidden="true">✓</span> Pass</span>
+        </div>
+        <div class="row">
+          <span class="sc" aria-hidden="true">2.1.1</span>
+          <span class="label">Keyboard operable</span>
+          <span class="pass"><span aria-hidden="true">✓</span> Pass</span>
+        </div>
+        <div class="row">
+          <span class="sc" aria-hidden="true">1.3.1</span>
+          <span class="label">Headings &amp; landmarks</span>
+          <span class="pass"><span aria-hidden="true">✓</span> Pass</span>
+        </div>
+        <div class="row">
+          <span class="sc" aria-hidden="true">2.4.7</span>
+          <span class="label">Visible focus</span>
+          <span class="pass"><span aria-hidden="true">✓</span> Pass</span>
+        </div>
+        <p class="specimen-note">Illustrative — the format of a real finding, mapped to its WCAG success criterion.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services" aria-labelledby="svc-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">What I do</p>
+        <h2 id="svc-h">Four ways I get a site to standard</h2>
+        <p class="sub measure">From a first read of where you stand to the documentation your procurement and legal teams ask for.</p>
+      </div>
+      <div class="grid-2">
+        <article class="svc">
+          <span class="tag">Audit</span>
+          <h3>Accessibility audits</h3>
+          <p>A full WCAG 2.2 and Section 508 review, with every issue ranked by severity and mapped to the exact success criterion — so your team knows what to fix first, not just that something's wrong.</p>
+        </article>
+        <article class="svc">
+          <span class="tag">Fix</span>
+          <h3>Remediation</h3>
+          <p>Hands-on fixes for what the audit finds: code, content, color, structure, and PDF remediation in Acrobat — plus accessible templates your team can reuse without me.</p>
+        </article>
+        <article class="svc">
+          <span class="tag">Document</span>
+          <h3>VPAT &amp; conformance reports</h3>
+          <p>A VPAT 2.x / Accessibility Conformance Report that documents how your product meets the standard — the exact document a government buyer requires before they sign.</p>
+        </article>
+        <article class="svc">
+          <span class="tag">Maintain</span>
+          <h3>Ongoing monitoring</h3>
+          <p>Regular checks so new pages and content don't quietly slip out of compliance. Set up in Siteimprove or the tool your team already runs.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- AUDIENCES -->
+  <section id="audiences" aria-labelledby="aud-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">Who it's for</p>
+        <h2 id="aud-h">Built for the organizations that have to get this right</h2>
+      </div>
+      <div class="aud">
+        <div class="aud-item">
+          <span class="flag">Deadline in effect</span>
+          <h3>State &amp; local government</h3>
+          <p>The updated ADA Title II rule sets firm deadlines for web and mobile accessibility. I help you meet them — before a complaint or a deadline does it for you.</p>
+        </div>
+        <div class="aud-item">
+          <h3>Health centers &amp; FQHCs</h3>
+          <p>Patient portals, scheduling tools, and public sites have to work for everyone, including people using screen readers and keyboards. I make sure they do.</p>
+        </div>
+        <div class="aud-item">
+          <h3>Vendors selling to government</h3>
+          <p>If your buyer requires a VPAT or Section 508 conformance, I produce the documentation and the fixes that clear the requirement and close the deal.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- METHOD -->
+  <section id="method" aria-labelledby="method-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">How it works</p>
+        <h2 id="method-h">Start small, with no risk to you</h2>
+        <p class="sub measure">Most engagements begin with a free look. You see the quality of the work before any money changes hands.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <span class="num">01</span>
+          <h3>Free scan</h3>
+          <p>I run an accessibility scan of your 1–3 most important pages and send you the findings that matter most. No cost, no obligation, no pressure.</p>
+        </div>
+        <div class="step">
+          <span class="num">02</span>
+          <h3>Scope &amp; plan</h3>
+          <p>We agree on what to audit or fix, the timeline, and a flat or hourly rate. You get a clear written scope before we start.</p>
+        </div>
+        <div class="step">
+          <span class="num">03</span>
+          <h3>Fix &amp; prove</h3>
+          <p>I deliver the audit, the fixes, or the conformance report — with documentation you can hand to leadership, procurement, or legal.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROOF -->
+  <section id="proof" aria-labelledby="proof-h">
+    <div class="wrap proof-grid">
+      <div>
+        <p class="eyebrow">Experience</p>
+        <h2 id="proof-h">Two decades of this, done in-house</h2>
+        <p class="sub" style="margin-top:1rem">I'm Elizabeth Sohn. I've spent my career making large institutional websites work for everyone — not as a side project, but as the job. Access Forward brings that same standard to your organization.</p>
+      </div>
+      <div>
+        <ul class="stat-list">
+          <li><span class="n">25+</span><span class="d">years in institutional web and graphic design, much of it focused on accessibility</span></li>
+          <li><span class="n">75+</span><span class="d">institutional websites moved toward Section 508 conformance</span></li>
+          <li><span class="n">2.2</span><span class="d">current on WCAG 2.1 and 2.2, Section 508, and the ADA Title II web rule</span></li>
+        </ul>
+        <div class="creds">
+          <h3>Tools &amp; credentials</h3>
+          <ul class="chips">
+            <li>WCAG 2.1 / 2.2</li>
+            <li>Section 508</li>
+            <li>Siteimprove</li>
+            <li>Cascade CMS</li>
+            <li>PDF remediation</li>
+            <li>MFA, Graphic Design</li>
+            <li>ISC2 CC</li>
+            <li>CPACC candidate (IAAP)</li>
+          </ul>
+        </div>
+        <p style="margin-top:1.4rem"><a href="https://accessforwardall.github.io/accessforwardall" rel="noopener">View the portfolio &amp; case work &rarr;</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- BY EXAMPLE — dark signature band -->
+  <section class="band-dark" aria-labelledby="example-h">
+    <div class="wrap">
+      <div class="sec-head" style="margin-bottom:1.4rem">
+        <p class="eyebrow">By example</p>
+        <h2 id="example-h">This page is the demo</h2>
+        <p class="lead" style="margin-top:1rem">The fastest way to judge an accessibility specialist is to test their own site. So this one is built to the standard I'd hold yours to — verified, not assumed.</p>
+      </div>
+      <ul class="proof-chips">
+        <li><span class="ck" aria-hidden="true">✓</span> Body text contrast <span class="mono">15:1 · AAA</span></li>
+        <li><span class="ck" aria-hidden="true">✓</span> Fully keyboard operable</li>
+        <li><span class="ck" aria-hidden="true">✓</span> Visible focus on every control</li>
+        <li><span class="ck" aria-hidden="true">✓</span> Honors reduced-motion</li>
+        <li><span class="ck" aria-hidden="true">✓</span> Semantic landmarks &amp; skip link</li>
+        <li><span class="ck" aria-hidden="true">✓</span> Readable and reflows to <span class="mono">320px</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" aria-labelledby="contact-h">
+    <div class="wrap contact-grid">
+      <div>
+        <p class="eyebrow">Get started</p>
+        <h2 id="contact-h">Start with a free scan</h2>
+        <p class="sub" style="margin-top:1rem">Send me your website and I'll send back the accessibility issues that matter most — no cost, no obligation. It's the easiest way to see what working together looks like.</p>
+        <div class="cta-row" style="margin-top:1.6rem">
+          <a class="btn btn-primary" href="mailto:accessforwardco@gmail.com?subject=Free%20accessibility%20scan%20request&amp;body=Hi%20Elizabeth%2C%20here%27s%20my%20website%3A%20">Email me your site <span class="arw" aria-hidden="true">&rarr;</span></a>
+        </div>
+      </div>
+      <div class="contact-card">
+        <dl>
+          <div>
+            <dt>Email</dt>
+            <dd><a href="mailto:accessforwardco@gmail.com">accessforwardco@gmail.com</a></dd>
+          </div>
+          <div>
+            <dt>Phone</dt>
+            <dd><a href="tel:+15755718478">575-571-8478</a></dd>
+          </div>
+          <div>
+            <dt>Based in</dt>
+            <dd>Las Cruces, New Mexico</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-inner">
+      <div>
+        <strong style="color:var(--ink)">Access Forward LLC</strong> · Las Cruces, New Mexico<br>
+        <a href="mailto:accessforwardco@gmail.com">accessforwardco@gmail.com</a> · <a href="tel:+15755718478">575-571-8478</a>
+      </div>
+      <div>© 2026 Access Forward LLC</div>
+    </div>
+    <p class="disclaimer">Access Forward helps organizations meet recognized accessibility standards and reduce risk. It does not provide legal advice and does not guarantee against litigation or complaints.</p>
+  </div>
+</footer>
+
+<script>
+  // Hairline appears on the header only once the page has scrolled.
+  (function(){
+    var header = document.querySelector('.site-header');
+    var onScroll = function(){
+      if (window.scrollY > 8) header.classList.add('scrolled');
+      else header.classList.remove('scrolled');
+    };
+    window.addEventListener('scroll', onScroll, {passive:true});
+    onScroll();
+  })();
+</script>
+</body>
+</html>
